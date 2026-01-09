@@ -64,10 +64,12 @@ export default function ShareableInvoice() {
 
     // Handler for downloading PDF
     const handleDownloadPDF = async () => {
-        if (!invoice || isDownloading) return;
+        if (!invoice || !invoice.client || isDownloading) return;
         setIsDownloading(true);
         try {
-            await downloadInvoicePDF(invoice);
+            // Type assertion is safe here because we've checked invoice.client exists above
+            const invoiceWithClient = { ...invoice, client: invoice.client };
+            await downloadInvoicePDF(invoiceWithClient);
         } catch (error) {
             console.error('Failed to download PDF:', error);
         } finally {
@@ -196,21 +198,27 @@ export default function ShareableInvoice() {
                                 Bill To
                             </h3>
                             <div className="mt-2">
-                                <p className="font-semibold text-slate-900 dark:text-white">{invoice.client.name}</p>
-                                {invoice.client.company && (
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                                        <Building2 className="mr-1.5 inline h-4 w-4" />
-                                        {invoice.client.company}
-                                    </p>
-                                )}
-                                <p className="text-sm text-slate-600 dark:text-slate-400">
-                                    <Mail className="mr-1.5 inline h-4 w-4" />
-                                    {invoice.client.email}
-                                </p>
-                                {invoice.client.address && (
-                                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                        {invoice.client.address}
-                                    </p>
+                                {invoice.client ? (
+                                    <>
+                                        <p className="font-semibold text-slate-900 dark:text-white">{invoice.client.name}</p>
+                                        {invoice.client.company && (
+                                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                                                <Building2 className="mr-1.5 inline h-4 w-4" />
+                                                {invoice.client.company}
+                                            </p>
+                                        )}
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                                            <Mail className="mr-1.5 inline h-4 w-4" />
+                                            {invoice.client.email}
+                                        </p>
+                                        {invoice.client.address && (
+                                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                                {invoice.client.address}
+                                            </p>
+                                        )}
+                                    </>
+                                ) : (
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">No client assigned</p>
                                 )}
                             </div>
                         </div>
