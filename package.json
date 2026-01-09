@@ -1,0 +1,20 @@
+{
+  "name": "invoicey",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "test": "npm run test --workspace=backend",
+    "test:watch": "npm run test:watch --workspace=backend",
+    "test:frontend": "npm run dev --workspace=frontend",
+    "test:backend": "npm run test --workspace=backend"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.90.1"
+  }
+}
